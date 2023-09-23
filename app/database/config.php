@@ -30,6 +30,7 @@ class config {
             return $result;
         }
         return [];
+        
     }
 }
 // $x = new config;

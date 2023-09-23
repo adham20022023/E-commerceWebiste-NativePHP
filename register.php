@@ -6,7 +6,6 @@ include_once "layouts/nav.php";
 include_once "layouts/breadcrumb.php";
 include_once "app/requests/Validation.php";
 include_once "app/models/User.php";
-;
 if($_POST){
     // print_r($_POST);die;
     // validation rules
@@ -32,7 +31,7 @@ if($_POST){
 
     $phoneValidation = new Validation('phone',$_POST['phone']);
     $phoneRequiredResult = $phoneValidation->required();
-    $phonePattern = "/^01[0-2,5,9]{1}[0-9]{8}$/";
+    $phonePattern = "/^01[0-2,5,9]{1}[0-9]{8}$/";// egypt pattern 
     if(empty($phoneRequiredResult)){
         $phoneRegexResult = $phoneValidation->regex($phonePattern);
         if(empty($phoneRegexResult)){  
@@ -54,6 +53,9 @@ if($_POST){
                 $success['password'] = 'password';
             }
         }
+    }
+    if(isset($success['email']) && isset($success['phone']) && isset($success['password'])){
+        
     }
 }
 

@@ -2,7 +2,6 @@
 $title = "Login";
 
 include_once "layouts/header.php";
-include_once "app/middleware/guest.php";
 include_once "layouts/nav.php";
 include_once "layouts/breadcrumb.php";
 ?>

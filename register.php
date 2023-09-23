@@ -1,11 +1,12 @@
 <?php
+ ob_start();
 $title = "Register";
-
 include_once "layouts/header.php";
 include_once "layouts/nav.php";
 include_once "layouts/breadcrumb.php";
 include_once "app/requests/Validation.php";
 include_once "app/models/User.php";
+include_once "services/mail.php";
 if($_POST){
     // print_r($_POST);die;
     // validation rules
@@ -55,6 +56,33 @@ if($_POST){
         }
     }
     if(isset($success['email']) && isset($success['phone']) && isset($success['password'])){
+        $userObject = new User();
+        $userObject->setFirst_name($_POST['first_name']);
+        $userObject->setLast_name($_POST['last_name']);
+        $userObject->setGender($_POST['gender']);
+        $userObject->setEmail($_POST['email']);
+        $userObject->setPhone($_POST['phone']);
+        $userObject->setPassword($_POST['password']);
+        $code=rand(10000,99999);
+        $userObject->setCode($code);
+        $result=$userObject->create();
+        if($result){
+            $subject="Verification Code";
+            $body="Your verification code is $code";
+            $mail =new mail($_POST['email'],$subject,$body);
+            $emailresult=$mail->send();
+            if($emailresult){
+               
+                header('Location: verify.php?email='.$_POST['email']);
+            }
+            else { 
+                $error="<div class='alert alert-danger'>Something Went Wrong></div>";
+            }
+        }
+        else {
+            $error="<div class='alert alert-danger'>Something Went Wrong></div>";
+        }
+
         
     }
 }
@@ -112,4 +140,5 @@ if($_POST){
 <?php
 include_once "layouts/footer.php";
 include_once "layouts/footer-scripts.php";
+ob_end_flush();
 ?>

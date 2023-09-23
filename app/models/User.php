@@ -282,9 +282,7 @@ class User extends config implements operations {
 
     public function create()
     {
-        $query = "INSERT INTO users (first_name,last_name,email,phone,password,gender,code) 
-        VALUES ('$this->first_name','$this->last_name','$this->email','$this->phone',
-        '$this->password','$this->gender',$this->code)";
+        $query="INSERT INTO users(first_name,last_name,phone,email,password,gender,code) VALUES('$this->first_name','$this->last_name','$this->phone','$this->email','$this->password','$this->gender','$this->code')";
         return $this->runDML($query);
     }
     public function read()
@@ -293,20 +291,14 @@ class User extends config implements operations {
     }
     public function update()
     {
-        $image = NULL;
-        if(!empty($this->image)){
-            $image = " , image = '$this->image' ";
-        }
-        $query = "UPDATE users SET first_name = '$this->first_name' , last_name = '$this->last_name' ,
-         phone = '$this->phone' , gender = '$this->gender' $image WHERE email = '$this->email'";
-         return $this->runDML($query);
+
     }
     public function delete()
     {
         # code...
     }
 
-    public function checkCode()
+    public function verify()
     {
         $query = "SELECT * FROM `users` WHERE email = '$this->email' AND code = $this->code";
         return $this->runDQL($query);
@@ -314,33 +306,26 @@ class User extends config implements operations {
 
     public function makeUserVerified()
     {
-        $query = "UPDATE `users` SET email_verified_at = '$this->email_verified_at',status = $this->status
-        WHERE email = '$this->email' ";
+        $query= "UPDATE users SET status = '$this->status', email_verified_at = '$this->email_verified_at' 
+        WHERE email = '$this->email'";
+
         return $this->runDML($query);
     }
 
     public function login()
     {
-        $query = "SELECT * FROM users WHERE email = '$this->email' AND password = '$this->password'";
-        return $this->runDQL($query);
     }
 
     public function getUserByEmail()
     {
-       $query = "SELECT * FROM users WHERE email = '$this->email' AND status in(0,1)";
-       return $this->runDQL($query);
     }
 
     public function updateCodeByEmail()
     {
-        $query = "UPDATE `users` SET code = $this->code WHERE email = '$this->email' ";
-        return $this->runDML($query);
     }
     
     public function updatePasswordByEmail()
     {
-        $query = "UPDATE `users` SET password = '$this->password' WHERE email = '$this->email' ";
-        return $this->runDML($query);
     }
 
     

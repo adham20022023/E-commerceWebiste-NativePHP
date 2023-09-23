@@ -13,5 +13,4 @@
 </html>
 <?php 
 ob_end_flush();
-unset($_SESSION['errors']);
 ?>

@@ -314,18 +314,26 @@ class User extends config implements operations {
 
     public function login()
     {
+        $query="select * from users where email = '$this->email' and password = '$this->password'";
+        return $this->runDQL($query);
     }
 
     public function getUserByEmail()
     {
+        $query="SELECT * FROM users where email = '$this->email'";
+        return $this->runDQL($query);
     }
 
     public function updateCodeByEmail()
     {
+        $query="UPDATE users SET code = '$this->code' WHERE email = '$this->email'";
+        return $this->runDML($query);
     }
     
     public function updatePasswordByEmail()
     {
+        $query="UPDATE users SET password = '$this->password' WHERE email = '$this->email'";
+        return $this->runDML($query);
     }
 
     

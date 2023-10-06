@@ -2,11 +2,11 @@
 $title = "Reset Password";
 include_once "layouts/header.php";
 include_once "app/middleware/guest.php";
-if(empty($_SESSION['user-email'])){
-    header('location:login.php');die;
-}
 include_once "app/requests/Validation.php";
 include_once "app/models/User.php";
+if(!isset($_GET['email'])){
+    header('Location: layouts/errors/404.php');
+}
 if($_POST){
     // validation
     // (password=>required,regex,confirmed )
@@ -49,10 +49,9 @@ if($_POST){
             // header to login
             $userObject = new user;
             $userObject->setPassword($_POST['password']);
-            $userObject->setEmail($_SESSION['user-email']);
+            $userObject->setEmail($_GET['email']);
             $result = $userObject->updatePasswordByEmail();
             if($result){
-                unset($_SESSION['user-email']);
                 $success = "Your Password Has Been Successfully Updated";
                 header('Refresh:3; url=login.php');
             }else{

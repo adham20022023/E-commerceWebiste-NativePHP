@@ -3,6 +3,7 @@
 $title = "Register";
 include_once "layouts/header.php";
 include_once "layouts/nav.php";
+include_once "app/middleware/guest.php";
 include_once "layouts/breadcrumb.php";
 include_once "app/requests/Validation.php";
 include_once "app/models/User.php";
@@ -73,7 +74,7 @@ if($_POST){
             $emailresult=$mail->send();
             if($emailresult){
                
-                header('Location: verify.php?email='.$_POST['email']);
+                header('Location: verify.php?email='.$_POST['email'].'&page=register');
             }
             else { 
                 $error="<div class='alert alert-danger'>Something Went Wrong></div>";

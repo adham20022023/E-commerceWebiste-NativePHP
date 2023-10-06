@@ -1,66 +1,60 @@
 <?php
-$title = "Forget Password";
-include_once "layouts/header.php";
-include_once "app/middleware/guest.php";
-include_once "app/models/User.php";
-include_once "app/requests/Validation.php";
-include_once "app/services/mail.php";
-if($_POST){
-    // validation
-    // email => required , regex ,
-    $errors = [];
-    $emailValidation = new Validation('email',$_POST['email']);
-    $emailRequriedResult = $emailValidation->required();
-    if(empty($emailRequriedResult)){
-        $emailPattern = "/^([a-zA-Z0-9_\-\.]+)@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([a-zA-Z0-9\-]+\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\]?)$/";
-        $emailRegExResult  = $emailValidation->regex($emailPattern);
-        if(!empty($emailRegExResult)){
-            $errors['email-regex'] = $emailRegExResult;
-        }
-    }else{
-        $errors['email-required'] = $emailRequriedResult;
-    }
-    // search on email in db
-    if(empty($errors)){
-        $userObject = new user;
-        $userObject->setEmail($_POST['email']);
-        $result = $userObject->getUserByEmail(); // 1
-        if($result){
-            // correct email
-            $user = $result->fetch_object(); // user variable has all user data in db
-            // if exists => generate code ,  
-            $code = rand(10000,99999);
-            $userObject->setCode($code);
-            $updateResult = $userObject->updateCodeByEmail();
-            if($updateResult){
-                // , save code 
-                // send code
-                // , header check-code.php
-            $subject = "Forget Password Code";
-            $body = "Hello {$_POST['first_name']} {$_POST['last_name']} <br> your Forget Password code is:<br>$code</br> thank you.";
-            $mail = new mail($_POST['email'],$subject,$body);
-            $mailResult = $mail->send();
-            if($mailResult){
-                // header to check code page
-                // store email in session
-                $_SESSION['user-email'] = $_POST['email'];
-                header('location:check-code.php?page=forget');die;
-            }else{
-                $errors['try-again'] = "Try Again Later";
-            }
-            }else{
-                $errors['some-wrong'] = "Something Went Wrong";
+    $title = "Forget Password";
+    include_once "layouts/header.php";
+    include_once "app/models/User.php";
+    include_once "app/requests/Validation.php";
+    include_once "services/mail.php";
+    if($_POST){
+        //validation
+
+        // validation
+        // email => required , regex ,
+        $errors = [];
+        $emailValidation = new Validation('email',$_POST['email']);
+        $emailRequriedResult = $emailValidation->required();
+        if(empty($emailRequriedResult)){
+            $emailPattern = "/^([a-zA-Z0-9_\-\.]+)@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([a-zA-Z0-9\-]+\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\]?)$/";
+            $emailRegExResult  = $emailValidation->regex($emailPattern);
+            if(!empty($emailRegExResult)){
+                $errors['email-regex'] = $emailRegExResult;
             }
         }else{
-            // wrong email
-            // if not exists => error (this dosen't match our records)
-            $errors['email-wrong'] = "this email dosen't match our records";
+            $errors['email-required'] = $emailRequriedResult;
+        }
+        //search on email in db
+        //if not exists => error
+        //if exists  => generate code header check code
+
+    if(empty($errors)){
+        $userObject = new User;
+        $userObject->setEmail($_POST['email']);
+        $result= $userObject->getUserByEmail();
+        if($result){
+            //correct email if exists => genrate code , save code , send code header check code
+            $code=rand(10000,99999);
+            $userObject->setCode($code);
+            $updateresult=$userObject->updateCodeByEmail();
+            if($updateresult){
+                $subject="Forget Password Code";
+                $body="Your verification code is $code";
+                $mail =new mail($_POST['email'],$subject,$body);
+                $emailresult=$mail->send();
+                if($emailresult){
+                
+                    header('Location: verify.php?email='.$_POST['email'].'&page=forget');
+                }
+                else { 
+                    $errors['someting-wrong']="Something went wrong";
+                }
+        }
+            }
+
+        else {
+            $errors['email-not-exists'] = "Email Not Exists";
         }
     }
-    
-  
-}
-?>
+    }
+ ?>
     <div class="login-register-area ptb-100">
         <div class="container">
             <div class="row">
@@ -83,7 +77,7 @@ if($_POST){
                                                         echo "<div class='alert alert-danger'>$value</div>";
                                                     }
                                                 }
-                                            ?>
+                                             ?>
                                             <div class="button-box">
                                                 <button type="submit"><span>Verify Email Address</span></button>
                                             </div>
@@ -98,6 +92,7 @@ if($_POST){
         </div>
     </div>
 <?php 
+
 include_once "layouts/footer-scripts.php";
 ?>
        

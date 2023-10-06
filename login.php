@@ -2,8 +2,10 @@
 $title = "Login";
 
 include_once "layouts/header.php";
+include_once "app/middleware/guest.php";
 include_once "layouts/nav.php";
-include_once "layouts/breadcrumb.php";
+include_once "layouts/breadcrumb.php"; 
+
 ?>
     <div class="login-register-area ptb-100">
         <div class="container">
@@ -20,7 +22,7 @@ include_once "layouts/breadcrumb.php";
                                 <div class="login-form-container">
                                     <div class="login-register-form">
                                         <form action="app/post/login.php" method="post">
-                                            <input type="email" name="email" placeholder="Email">
+                                            <input type="email" value="<?php if(isset($_COOKIE['remember_me']))echo $_COOKIE['remember_me']; ?>"name="email" placeholder="Email">
                                             <?php 
                                                 if(!empty($_SESSION['errors']['email'])){
                                                     foreach ($_SESSION['errors']['email']as $key => $value) {

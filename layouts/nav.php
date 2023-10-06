@@ -1,4 +1,3 @@
-
     <header class="header-area gray-bg clearfix">
         <div class="header-bottom">
             <div class="container">

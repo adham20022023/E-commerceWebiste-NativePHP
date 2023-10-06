@@ -3,82 +3,6 @@ $title = "My Account";
 include_once "layouts/header.php";
 include_once "app/middleware/auth.php";
 include_once "app/models/User.php";
-// print_r($_SESSION);die;
-$userObject = new user;
-$userObject->setEmail($_SESSION['user']->email);
-
-if (isset($_POST['update-profile'])) {
-    $errors = [];
-    if (empty($_POST['first_name']) || empty($_POST['last_name']) || empty($_POST['phone']) || empty($_POST['gender'])) {
-        $errors['all'] = "<div class='alert alert-danger'> All Feilds Are Required </div>";
-    }
-
-    $userObject->setFirst_name($_POST['first_name']);
-    $userObject->setLast_name($_POST['last_name']);
-    $userObject->setPhone($_POST['phone']);
-    $userObject->setGender($_POST['gender']);
-    if ($_FILES['image']['error'] == 0) {
-        // photo exists
-        // size
-        $maxUploadSize = 10 ** 6; // 1 mega byte
-        $megaBytes = $maxUploadSize / (10 ** 6);
-        if ($_FILES['image']['size'] > $maxUploadSize) {
-            $errors['image-size'] = "<div class='alert alert-danger'> Max upload Size Of Image Is $megaBytes Bytes </div>";
-        }
-        // , extension
-        $extension = pathinfo($_FILES['image']['name'], PATHINFO_EXTENSION);
-        $availableExtensions = ['jpg', 'png', 'jpeg'];
-        if (!in_array($extension, $availableExtensions)) {
-            $errors['image-extension'] = "<div class='alert alert-danger'> Allowed Exentsions are " . implode(",", $availableExtensions) . " </div>";
-        }
-
-        if (empty($errors)) {
-            $photoName = uniqid() . '.' . $extension; // sakdfljlks.png
-            $photoPath = "assets/img/users/$photoName";
-            move_uploaded_file($_FILES['image']['tmp_name'], $photoPath);
-            // set image
-            $userObject->setImage($photoName);
-            $_SESSION['user']->image = $photoName;
-        }
-    }
-    if (empty($errors)) {
-        $result = $userObject->update();
-        $_SESSION['user']->first_name = $_POST['first_name'];
-        $_SESSION['user']->last_name = $_POST['last_name'];
-        $_SESSION['user']->phone = $_POST['phone'];
-        $_SESSION['user']->gender = $_POST['gender'];
-        if ($result) {
-            $success = "<div class='alert alert-success'> Updated Successfully </div>";
-        } else {
-            $errors['all'] = "<div class='alert alert-danger'> Something Went Wrong </div>";
-        }
-    }
-}
-
-if(isset($_POST['update-password'])){
-    
-    // 123456 -> hashed -> compare -> 23153s2f1g32fds2fg1h32
-    // 23153s2f1g32fds2fg1h32 
-    // old password => required , regex , correct=>database
-    // new password => required , regex , confirmed
-    // confrim password => required
-
-    // if no validation errors
-    $userObject->setPassword($_POST['new_password']);
-    $result = $userObject->updatePasswordByEmail();
-    if($result){
-        // print success message
-    }else{
-        // print error
-    }
-
-}
-
-
-$result = $userObject->getUserByEmail();
-$user = $result->fetch_object();
-include_once "layouts/nav.php";
-include_once "layouts/breadcrumb.php";
 ?>
 <!-- Breadcrumb Area End -->
 <!-- my account start -->
@@ -263,11 +187,3 @@ include_once "layouts/breadcrumb.php";
 include_once "layouts/footer.php";
 include_once "layouts/footer-scripts.php";
 ?>
-<script>
-    // document.getElementById('image').click(function(){
-    //     document.getElementById('file').click();
-    // });
-    $('#image').on('click', function() {
-        $('#file').click();
-    });
-</script>

@@ -2,6 +2,20 @@
 $title = "Check Code";
 include_once "layouts/header.php";
 include_once "app/models/User.php";
+$avaliablepages=['forget','register'];
+if($_GET){
+    if(isset($_GET['page'])){
+        if(!in_array($_GET['page'], $avaliablepages)){
+            header('location:layouts/errors/404.php');
+        }
+    }
+    else {
+        header('location:layouts/errors/404.php');
+    }
+}
+else {
+    header('location:layouts/errors/404.php');
+}
 if($_POST){
     $errors=[];
     if(empty($_POST['code'])){
@@ -22,10 +36,15 @@ if($_POST){
             $userObject->setEmail_verified_at(date('Y-m-d H:i:s'));
             $updateResult=$userObject->makeUserVerified();
             if($updateResult){
-                header('Location: login.php');
+                if($_GET['page']=='register'){
+                    header('Location: login.php');
+                }
+                else {
+                    header('location:reset-password.php?email='.$_GET['email']);
+                }
             }
             else {
-                $errors="<div class='alert alert-danger'>Something Went Wrong</div>";
+                $errors['something']="<div class='alert alert-danger'>Something Went Wrong</div>";
             }
 
         }

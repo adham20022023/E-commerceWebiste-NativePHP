@@ -40,21 +40,25 @@ if(empty($_SESSION['errors'])){
     $result = $userObject->login(); // one user || no user
     if($result){
         // correct credentionals
-        $user = $result->fetch_object();
+        $user = $result->fetch_object();//we use object if we have only one user else we use array
+        // echo "<pre>";
+        // print_r($user);die;
+        // echo "</pre>";
         if($user->status == 1){ // verified
-            // home
+            //! home
             if(isset($_POST['remember_me'])){
+                // cookie name , value , expire date , path can access from anywhere => '/'
                 setcookie('remember_me',$_POST['email'],time() + (24*60*60) * 30 * 12 , '/');
             }
             $_SESSION['user'] = $user;
             header('location:../../index.php');die;
         } elseif($user->status == 0){ // not verified
-            // check code
+            //! check code
             $_SESSION['user-email'] = $_POST['email'];
-            header('location:../../check-code.php');die;
+            header('location:../../verify.php');die;
         }else{
-            // 2 block
-            // error
+            //! 2 block
+            //! error
             $_SESSION['errors']['email']['block'] = "Sorry , Your Account Has Been Blocked";
         }
         // status => 1 => home
@@ -77,7 +81,7 @@ if(empty($_SESSION['errors'])){
 //         ]
 //     ]
 // ];
-
+// print_r($_SESSION);
 header('location:../../login.php');
 
 

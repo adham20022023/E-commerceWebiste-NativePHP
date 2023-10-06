@@ -1,5 +1,13 @@
 <?php 
 ob_start();
+session_start();
+if(isset($_COOKIE['remember_me'])){
+    include_once "app/models/User.php";
+    $userObject = new User;
+    $userObject->setEmail($_COOKIE['remember_me']);
+    $result= $userObject->getUserByEmail();
+    $_SESSION['user'] = $result->fetch_object();
+}
 ?>
 <!doctype html>
 <html class="no-js" lang="zxx">

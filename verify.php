@@ -2,9 +2,10 @@
 $title = "Check Code";
 include_once "layouts/header.php";
 include_once "app/models/User.php";
+include_once "app/middleware/guest.php";
 $avaliablepages=['forget','register'];
 if($_GET){
-    if(isset($_GET['page'])){
+    if(isset($_GET['page']) && isset($_GET['email'])){
         if(!in_array($_GET['page'], $avaliablepages)){
             header('location:layouts/errors/404.php');
         }

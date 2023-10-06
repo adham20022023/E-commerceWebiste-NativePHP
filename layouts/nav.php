@@ -1,3 +1,15 @@
+    <!-- header start -->
+    <?php
+    include_once "app/models/Category.php";
+    include_once "app/models/Subcategory.php";
+    $categoryObject = new Category;
+    $categoryObject->setStatus(1);
+    $categoriesResult = $categoryObject->read();
+
+    $subcategoryObject = new Subcategory;
+    $subcategoryObject->setStatus(1);
+
+    ?>
     <header class="header-area gray-bg clearfix">
         <div class="header-bottom">
             <div class="container">

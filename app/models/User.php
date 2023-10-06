@@ -291,6 +291,12 @@ class User extends config implements operations {
     }
     public function update()
     {
+        $image = '';
+        if (!empty($this->image)) {
+            $image .= ", image = '$this->image'";
+        }
+        $query = "UPDATE users SET first_name = '$this->first_name', last_name = '$this->last_name', phone = '$this->phone', gender = '$this->gender' $image WHERE email = '$this->email'";
+        return $this->runDML($query);
 
     }
     public function delete()

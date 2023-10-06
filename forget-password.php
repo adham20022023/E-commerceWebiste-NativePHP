@@ -2,6 +2,7 @@
     $title = "Forget Password";
     include_once "layouts/header.php";
     include_once "app/models/User.php";
+    include_once "app/middleware/guest.php";
     include_once "app/requests/Validation.php";
     include_once "services/mail.php";
     if($_POST){
